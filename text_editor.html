@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>БЛОКНОТ КАЗИ </title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px;
+            font-size: 16px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Текстовый редактор с историей</h1>
+    <textarea id="textInput" placeholder="Напишите здесь..."></textarea>
+    <br>
+    <button onclick="saveText()">Сохранить текст</button>
+    <button onclick="loadLatestText()">Загрузить последний текст</button>
+    <h2>История сохранённых текстов:</h2>
+    <ul id="historyList"></ul>
+
+    <script>
+        // Функция для сохранения текста
+        function saveText() {
+            const text = document.getElementById('textInput').value;
+            let history = JSON.parse(localStorage.getItem('textHistory')) || [];
+
+            if (text.trim() !== "") {
+                history.push(text);
+                localStorage.setItem('textHistory', JSON.stringify(history));
+                updateHistoryList();
+                document.getElementById('textInput').value = ""; // Очистка текстового поля
+                alert('Текст сохранён!');
+            } else {
+                alert('Введите текст для сохранения.');
+            }
+        }
+
+        // Функция для загрузки последнего сохранённого текста
+        function loadLatestText() {
+            const history = JSON.parse(localStorage.getItem('textHistory')) || [];
+            if (history.length > 0) {
+                document.getElementById('textInput').value = history[history.length - 1];
+                alert('Последний текст загружен!');
+            } else {
+                alert('Нет сохранённого текста.');
+            }
+        }
+
+        // Функция для обновления списка истории
+        function updateHistoryList() {
+            const history = JSON.parse(localStorage.getItem('textHistory')) || [];
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = ""; // Очистка списка перед обновлением
+
+            history.forEach((item, index) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `Текст ${index + 1}: ${item.substring(0, 20)}...`; // Показать первые 20 символов
+                listItem.onclick = () => loadSpecificText(index);
+                historyList.appendChild(listItem);
+            });
+        }
+
+        // Функция для загрузки конкретного текста из истории
+        function loadSpecificText(index) {
+            const history = JSON.parse(localStorage.getItem('textHistory')) || [];
+            document.getElementById('textInput').value = history[index];
+        }
+
+        // Обновление списка при загрузке страницы
+        window.onload = updateHistoryList;
+    </script>
+</body>
+</html>
