@@ -1,93 +1,91 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>БЛОКНОТ КАЗИ </title>
+    <title>Сообщения пользователей</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
             padding: 20px;
-            border: 1px solid #ccc;
+        }
+        h1 {
+            color: #333;
+        }
+        .message-container {
+            width: 100%;
+            max-width: 600px;
+            margin-top: 20px;
+        }
+        .message {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
         }
         textarea {
             width: 100%;
-            height: 200px;
+            padding: 10px;
             margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            resize: none;
         }
         button {
-            padding: 10px;
-            font-size: 16px;
+            padding: 10px 20px;
+            background-color: #5cb85c;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            margin: 5px 0;
+        button:hover {
+            background-color: #4cae4c;
         }
     </style>
 </head>
 <body>
-    <h1>Текстовый редактор с историей</h1>
-    <textarea id="textInput" placeholder="Напишите здесь..."></textarea>
-    <br>
-    <button onclick="saveText()">Сохранить текст</button>
-    <button onclick="loadLatestText()">Загрузить последний текст</button>
-    <h2>История сохранённых текстов:</h2>
-    <ul id="historyList"></ul>
+    <h1>Оставьте сообщение</h1>
+    <div class="message-container" id="messageContainer">
+        <!-- Здесь будут отображаться сообщения -->
+    </div>
+    <textarea id="messageInput" rows="4" placeholder="Введите ваше сообщение"></textarea>
+    <button onclick="postMessage()">Отправить сообщение</button>
 
     <script>
-        // Функция для сохранения текста
-        function saveText() {
-            const text = document.getElementById('textInput').value;
-            let history = JSON.parse(localStorage.getItem('textHistory')) || [];
+        const messages = [];
 
-            if (text.trim() !== "") {
-                history.push(text);
-                localStorage.setItem('textHistory', JSON.stringify(history));
-                updateHistoryList();
-                document.getElementById('textInput').value = ""; // Очистка текстового поля
-                alert('Текст сохранён!');
+        function postMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const messageText = messageInput.value.trim();
+
+            if (messageText) {
+                messages.push(messageText);
+                displayMessages();
+                messageInput.value = ''; // Очищаем поле ввода
             } else {
-                alert('Введите текст для сохранения.');
+                alert('Введите сообщение!');
             }
         }
 
-        // Функция для загрузки последнего сохранённого текста
-        function loadLatestText() {
-            const history = JSON.parse(localStorage.getItem('textHistory')) || [];
-            if (history.length > 0) {
-                document.getElementById('textInput').value = history[history.length - 1];
-                alert('Последний текст загружен!');
-            } else {
-                alert('Нет сохранённого текста.');
-            }
-        }
+        function displayMessages() {
+            const messageContainer = document.getElementById('messageContainer');
+            messageContainer.innerHTML = '';
 
-        // Функция для обновления списка истории
-        function updateHistoryList() {
-            const history = JSON.parse(localStorage.getItem('textHistory')) || [];
-            const historyList = document.getElementById('historyList');
-            historyList.innerHTML = ""; // Очистка списка перед обновлением
-
-            history.forEach((item, index) => {
-                const listItem = document.createElement('li');
-                listItem.textContent = `Текст ${index + 1}: ${item.substring(0, 20)}...`; // Показать первые 20 символов
-                listItem.onclick = () => loadSpecificText(index);
-                historyList.appendChild(listItem);
+            messages.forEach((message, index) => {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message';
+                messageDiv.textContent = message;
+                messageContainer.appendChild(messageDiv);
             });
         }
-
-        // Функция для загрузки конкретного текста из истории
-        function loadSpecificText(index) {
-            const history = JSON.parse(localStorage.getItem('textHistory')) || [];
-            document.getElementById('textInput').value = history[index];
-        }
-
-        // Обновление списка при загрузке страницы
-        window.onload = updateHistoryList;
     </script>
 </body>
 </html>
