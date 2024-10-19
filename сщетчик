@@ -1,0 +1,56 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace WindowsFormsApp3
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+        const decimal тарифЭлектричество = 5.00m;  // руб за кВтч
+        const decimal тарифВода = 30.00m;          // руб за куб.м
+        const decimal тарифГорячаяВода = 60.00m;   // руб за куб.м горячей воды
+        const decimal тарифГаз = 10.00m;           // руб за куб.м
+        const decimal тарифОтопление = 20.00m;     // руб за Гкал
+        private void buttonРассчитать_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Чтение введенных пользователем данных
+                decimal потреблениеЭлектричества = Convert.ToDecimal(textBoxЭлектричество.Text);
+                decimal потреблениеВоды = Convert.ToDecimal(textBoxВода.Text);
+                decimal потреблениеГорячейВоды = Convert.ToDecimal(textBoxГорячаяВода.Text);
+                decimal потреблениеГаза = Convert.ToDecimal(textBoxГаз.Text);
+                decimal потреблениеОтопления = Convert.ToDecimal(textBoxОтопление.Text);
+
+                // Расчет стоимости услуг
+                decimal стоимостьЭлектричества = потреблениеЭлектричества * тарифЭлектричество;
+                decimal стоимостьВоды = потреблениеВоды * тарифВода;
+                decimal стоимостьГорячейВоды = потреблениеГорячейВоды * тарифГорячаяВода;
+                decimal стоимостьГаза = потреблениеГаза * тарифГаз;
+                decimal стоимостьОтопления = потреблениеОтопления * тарифОтопление;
+
+                // Общая стоимость
+                decimal общаяСумма = стоимостьЭлектричества + стоимостьВоды + стоимостьГорячейВоды + стоимостьГаза + стоимостьОтопления;
+
+                // Вывод результата в метку
+                labelРезультат.Text = $"Общая сумма к оплате: {общаяСумма} руб.";
+            }
+
+            catch (Exception ex)
+            {
+                // Обработка ошибок при вводе данных
+                MessageBox.Show($"Ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+    }
+}
